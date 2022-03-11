@@ -1,13 +1,13 @@
-import React, {useState} from 'react';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
 import FileBase from 'react-file-base64';
 import useStyles from './styles';
 
-import { createPost } from '../../actions/posts'; 
+import { createPost, updatePost } from '../../actions/posts'; 
 
-const Form = () => {  
+const Form = ({currentId, setCurrentId}) => {
   const [postData, setPostData] = useState({
     creator: '',
     title: '',
@@ -20,9 +20,28 @@ const Form = () => {
 
   const dispatch = useDispatch();
 
+  /*
+  post card edit button click should load the form with post details.
+  Post data fetch from store and load into form.
+  useSelector retrieve post data from store and if currentId has value find the post record from posts object.
+  then load data in form using useEffect,
+  for conditional rendering we use post as the second argument in useEffect
+  */
+  const post = useSelector((state) => currentId ? state.posts.find((p) => p._id === currentId) : null);
+  useEffect(() => {
+    if (post) setPostData(post)
+  }, [post])
+
+  /*
+  post creation and updation
+  */
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(createPost(postData));
+    if (currentId) {
+      dispatch(updatePost(currentId, postData));
+    } else {
+      dispatch(createPost(postData));
+    }
   }
 
   const clear = () => {
