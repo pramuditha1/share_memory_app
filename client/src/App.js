@@ -15,7 +15,12 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getPosts())
-  }, [dispatch])
+  }, [currentId, dispatch])
+  /*
+  use currentId in watch array, when we update a post currentId fills with its _id value. after updation 
+  value clears and assign null. hence useEffect in App.js executes and dispatch getPosts() again and render 
+  updated posts.
+  */
   return (
     <Container maxWidth="lg">
       <AppBar className={classes.appBar} position="static" color="inherit">
